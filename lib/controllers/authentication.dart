@@ -43,7 +43,7 @@ class AuthenticationController extends GetxController {
         isLoading.value = false;
         token.value = json.decode(response.body)['token'];
         box.write('token', token.value);
-        Get.offAll(() => const HomePage());
+        Get.offAll(() => const Home());
       } else {
         Get.snackbar(
           'Error',
@@ -86,7 +86,7 @@ class AuthenticationController extends GetxController {
         isLoading.value = false;
         token.value = json.decode(response.body)['token'];
         box.write('token', token.value);
-        Get.offAll(() => const HomePage());
+        Get.offAll(() => const Home());
       } else {
         Get.snackbar(
           'Error',
