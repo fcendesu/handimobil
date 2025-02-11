@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handimobil/controllers/authentication.dart';
 import 'package:handimobil/views/register_page.dart';
 import 'package:handimobil/views/widgets/input_widget.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final AuthenticationController authenticationController =
+      Get.put(AuthenticationController());
 
   @override
   Widget build(BuildContext context) {
@@ -56,14 +59,25 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {},
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
+                  onPressed: () async {
+                    await authenticationController.login(
+                      email: emailController.text.trim(),
+                      password: passwordController.text.trim(),
+                    );
+                  },
+                  child: Obx(() {
+                    return authenticationController.isLoading.value
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                  })),
               const SizedBox(
                 height: 20,
               ),
