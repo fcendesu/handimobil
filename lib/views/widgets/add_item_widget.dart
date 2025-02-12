@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/item_controller.dart';
+import 'item_list_widget.dart';
 
 class AddItemWidget extends StatelessWidget {
   final TextEditingController itemNameController = TextEditingController();
@@ -15,6 +16,7 @@ class AddItemWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox(height: 50),
           TextField(
             controller: itemNameController,
             decoration: InputDecoration(
@@ -67,6 +69,15 @@ class AddItemWidget extends StatelessWidget {
                       style: TextStyle(fontSize: 18),
                     );
             }),
+          ),
+          SizedBox(height: 30),
+          ItemListWidget(
+            itemController: itemController,
+            onEditItem: (item) {
+              itemNameController.text = item['item'];
+              brandController.text = item['brand'];
+              priceController.text = item['price'].toString();
+            },
           ),
         ],
       ),
