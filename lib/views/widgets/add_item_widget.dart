@@ -73,11 +73,6 @@ class AddItemWidget extends StatelessWidget {
           SizedBox(height: 30),
           ItemListWidget(
             itemController: itemController,
-            onEditItem: (item) {
-              itemNameController.text = item['item'];
-              brandController.text = item['brand'];
-              priceController.text = item['price'].toString();
-            },
           ),
         ],
       ),

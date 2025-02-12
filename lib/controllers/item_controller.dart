@@ -48,7 +48,7 @@ class ItemController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        isLoading.value = false;
+        fetchItems(); // Add this line to refresh the list
       } else {
         Get.snackbar(
           'Error',
@@ -57,8 +57,8 @@ class ItemController extends GetxController {
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
-        isLoading.value = false;
       }
+      isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
       print(e.toString());

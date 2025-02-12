@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/item_controller.dart';
+import 'edit_item_dialog.dart';
 
 class ItemListWidget extends StatelessWidget {
   final ItemController itemController;
-  final Function(Map<String, dynamic>) onEditItem;
 
   const ItemListWidget({
     Key? key,
     required this.itemController,
-    required this.onEditItem,
   }) : super(key: key);
 
   @override
@@ -29,13 +28,21 @@ class ItemListWidget extends StatelessWidget {
               child: ListTile(
                 title: Text(item['item']),
                 subtitle:
-                    Text('Brand: ${item['brand']}\nPrice: \$${item['price']}'),
+                    Text('Brand: ${item['brand']}\nPrice: ${item['price']}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit),
-                      onPressed: () => onEditItem(item),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => EditItemDialog(
+                            item: item,
+                            itemController: itemController,
+                          ),
+                        );
+                      },
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
