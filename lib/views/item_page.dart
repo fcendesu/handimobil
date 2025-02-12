@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handimobil/views/widgets/add_item_widget.dart';
 
 class ItemPage extends StatefulWidget {
   const ItemPage({super.key});
@@ -10,8 +11,8 @@ class ItemPage extends StatefulWidget {
 class _ItemPageState extends State<ItemPage> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Item Page'),
+    return Scaffold(
+      body: AddItemWidget(),
     );
   }
 }
