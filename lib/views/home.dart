@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:handimobil/views/home_page.dart';
 import 'discovery_page.dart';
 import 'profile_page.dart';
