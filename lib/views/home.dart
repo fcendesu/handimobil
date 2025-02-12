@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handimobil/views/home_page.dart';
 import 'discovery_page.dart';
-import 'profile_page.dart';
+import 'item_page.dart';
 import 'widgets/navigation_widget.dart';
 
 class Home extends StatefulWidget {
@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _pages = [
     HomePage(),
     DiscoveryPage(),
-    ProfilePage(),
+    ItemPage(),
   ];
 
   void _onItemTapped(int index) {

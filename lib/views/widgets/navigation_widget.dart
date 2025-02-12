@@ -23,8 +23,8 @@ class CustomNavigationBar extends StatelessWidget {
           label: 'Discovery',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
+          icon: Icon(Icons.production_quantity_limits_outlined),
+          label: 'Item',
         ),
       ],
       currentIndex: selectedIndex,
