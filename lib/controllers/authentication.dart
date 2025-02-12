@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:handimobil/views/home.dart';
+import 'package:handimobil/views/login_page.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants/constants.dart';
@@ -101,6 +102,37 @@ class AuthenticationController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       print(e.toString());
+    }
+  }
+
+  Future<void> validateToken() async {
+    try {
+      var storedToken = box.read('token');
+      print(storedToken);
+      if (storedToken == null) {
+        Get.offAll(() => const LoginPage());
+        return;
+      }
+
+      var response = await http.get(
+        Uri.parse('$url/token/validate'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $storedToken',
+        },
+      );
+
+      print(json.decode(response.body));
+
+      if (response.statusCode == 200) {
+        Get.offAll(() => const Home());
+      } else {
+        box.remove('token');
+        Get.offAll(() => const LoginPage());
+      }
+    } catch (e) {
+      print(e.toString());
+      Get.offAll(() => const LoginPage());
     }
   }
 }
