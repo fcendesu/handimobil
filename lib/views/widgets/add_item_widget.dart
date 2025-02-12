@@ -71,6 +71,18 @@ class AddItemWidget extends StatelessWidget {
             }),
           ),
           SizedBox(height: 30),
+          TextField(
+            decoration: InputDecoration(
+              labelText: 'Search Items',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.search),
+            ),
+            onChanged: (value) {
+              itemController.searchText.value = value;
+              itemController.searchItems(value);
+            },
+          ),
+          SizedBox(height: 20),
           ItemListWidget(
             itemController: itemController,
           ),

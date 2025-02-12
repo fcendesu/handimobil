@@ -19,6 +19,17 @@ class ItemListWidget extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
+        if (itemController.items.isEmpty) {
+          return Center(
+            child: Text(
+              itemController.searchText.value.isEmpty
+                  ? 'No items available'
+                  : 'No items found for "${itemController.searchText.value}"',
+              style: TextStyle(fontSize: 16),
+            ),
+          );
+        }
+
         return ListView.builder(
           itemCount: itemController.items.length,
           itemBuilder: (context, index) {

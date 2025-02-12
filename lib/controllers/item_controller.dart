@@ -9,6 +9,7 @@ class ItemController extends GetxController {
   var isLoading = false.obs;
   final box = GetStorage();
   var items = <Map<String, dynamic>>[].obs;
+  var searchText = ''.obs;
 
   @override
   void onInit() {
@@ -167,6 +168,35 @@ class ItemController extends GetxController {
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
+      }
+      isLoading.value = false;
+    } catch (e) {
+      isLoading.value = false;
+      print(e.toString());
+    }
+  }
+
+  Future<void> searchItems(String query) async {
+    try {
+      isLoading.value = true;
+      var storedToken = box.read('token');
+
+      if (query.isEmpty) {
+        await fetchItems();
+        return;
+      }
+
+      var response = await http.get(
+        Uri.parse('$url/item/show/$query'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $storedToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        items.value =
+            List<Map<String, dynamic>>.from(json.decode(response.body)['item']);
       }
       isLoading.value = false;
     } catch (e) {
