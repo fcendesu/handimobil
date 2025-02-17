@@ -46,6 +46,7 @@ class DiscoveryController extends GetxController {
     required String customerEmail,
     required String discovery,
     required String todoList,
+    String? address, // Add this parameter
     String? noteToCustomer,
     String? noteToHandi,
     String? paymentMethod,
@@ -92,6 +93,7 @@ class DiscoveryController extends GetxController {
         'customer_email': customerEmail,
         'discovery': discovery,
         'todo_list': todoList,
+        if (address?.isNotEmpty ?? false) 'address': address!, // Add this field
         if (noteToCustomer?.isNotEmpty ?? false)
           'note_to_customer': noteToCustomer!,
         if (noteToHandi?.isNotEmpty ?? false) 'note_to_handi': noteToHandi!,

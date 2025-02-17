@@ -11,6 +11,8 @@ class DiscoveryPage extends StatelessWidget {
   final TextEditingController customerNameController = TextEditingController();
   final TextEditingController customerPhoneController = TextEditingController();
   final TextEditingController customerEmailController = TextEditingController();
+  final TextEditingController addressController =
+      TextEditingController(); // Add the address controller
   final TextEditingController discoveryTextController =
       TextEditingController(); // Renamed to avoid conflict
   final TextEditingController todoListController = TextEditingController();
@@ -69,6 +71,16 @@ class DiscoveryPage extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: addressController,
+              maxLines: 3,
+              decoration: const InputDecoration(
+                labelText: 'Address',
+                helperText: 'Enter customer\'s address',
+                border: OutlineInputBorder(),
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
@@ -160,7 +172,6 @@ class DiscoveryPage extends StatelessWidget {
               decoration: const InputDecoration(
                 labelText: 'Service Cost',
                 border: OutlineInputBorder(),
-                prefixText: '\$',
               ),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
@@ -171,7 +182,6 @@ class DiscoveryPage extends StatelessWidget {
               decoration: const InputDecoration(
                 labelText: 'Transportation Cost',
                 border: OutlineInputBorder(),
-                prefixText: '\$',
               ),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
@@ -182,7 +192,6 @@ class DiscoveryPage extends StatelessWidget {
               decoration: const InputDecoration(
                 labelText: 'Labor Cost',
                 border: OutlineInputBorder(),
-                prefixText: '\$',
               ),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
@@ -193,7 +202,6 @@ class DiscoveryPage extends StatelessWidget {
               decoration: const InputDecoration(
                 labelText: 'Extra Fee',
                 border: OutlineInputBorder(),
-                prefixText: '\$',
               ),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
@@ -215,7 +223,6 @@ class DiscoveryPage extends StatelessWidget {
               decoration: const InputDecoration(
                 labelText: 'Discount Amount',
                 border: OutlineInputBorder(),
-                prefixText: '\$',
               ),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
@@ -244,6 +251,8 @@ class DiscoveryPage extends StatelessWidget {
                             customerName: customerNameController.text.trim(),
                             customerPhone: customerPhoneController.text.trim(),
                             customerEmail: customerEmailController.text.trim(),
+                            address:
+                                addressController.text.trim(), // Add this line
                             discovery: discoveryTextController.text.trim(),
                             todoList: todoListController.text.trim(),
                             noteToCustomer:
@@ -269,6 +278,7 @@ class DiscoveryPage extends StatelessWidget {
                             customerNameController.clear();
                             customerPhoneController.clear();
                             customerEmailController.clear();
+                            addressController.clear(); // Add address clearing
                             discoveryTextController.clear();
                             todoListController.clear();
                             noteToCustomerController.clear();
