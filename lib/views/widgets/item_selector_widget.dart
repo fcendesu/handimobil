@@ -5,8 +5,10 @@ import '../../controllers/discovery_controller.dart';
 import '../../models/selected_item.dart';
 
 class ItemSelectorWidget extends StatelessWidget {
-  final ItemController itemController = Get.find();
+  final ItemController itemController = Get.put(ItemController());
   final DiscoveryController discoveryController = Get.find();
+
+  ItemSelectorWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,64 +77,108 @@ class ItemSelectorWidget extends StatelessWidget {
   void _showQuantityDialog(BuildContext context, Map<String, dynamic> item) {
     final quantityController = TextEditingController(text: '1');
     final customPriceController = TextEditingController();
-    bool useCustomPrice = false;
+    var useCustomPrice = false.obs;
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text('Add ${item['item']}'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: quantityController,
-                decoration: InputDecoration(labelText: 'Quantity'),
-                keyboardType: TextInputType.number,
-              ),
-              Row(
-                children: [
-                  Checkbox(
-                    value: useCustomPrice,
-                    onChanged: (value) {
-                      setState(() => useCustomPrice = value!);
-                    },
-                  ),
-                  Text('Use custom price'),
-                ],
-              ),
-              if (useCustomPrice)
+      builder: (context) => AlertDialog(
+        title: Text('Add ${item['item']}'),
+        content: Obx(() => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
                 TextField(
-                  controller: customPriceController,
-                  decoration: InputDecoration(labelText: 'Custom Price'),
+                  controller: quantityController,
+                  decoration: const InputDecoration(
+                    labelText: 'Quantity *',
+                    border: OutlineInputBorder(),
+                  ),
                   keyboardType: TextInputType.number,
                 ),
-            ],
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: useCustomPrice.value,
+                      onChanged: (value) => useCustomPrice.value = value!,
+                    ),
+                    const Text('Use custom price'),
+                  ],
+                ),
+                if (useCustomPrice.value) ...[
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: customPriceController,
+                    decoration: const InputDecoration(
+                      labelText: 'Custom Price',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                  ),
+                ],
+              ],
+            )),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                discoveryController.addItem(SelectedItem(
-                  id: item['id'],
-                  name: item['item'],
-                  brand: item['brand'],
-                  originalPrice: double.parse(item['price'].toString()),
-                  quantity: int.parse(quantityController.text),
-                  customPrice:
-                      useCustomPrice && customPriceController.text.isNotEmpty
-                          ? double.parse(customPriceController.text)
-                          : null,
-                ));
-                Navigator.pop(context);
-              },
-              child: Text('Add'),
-            ),
-          ],
-        ),
+          TextButton(
+            onPressed: () {
+              // Validate quantity
+              if (quantityController.text.isEmpty) {
+                Get.snackbar(
+                  'Error',
+                  'Please enter a quantity',
+                  snackPosition: SnackPosition.TOP,
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+                return;
+              }
+
+              final quantity = int.tryParse(quantityController.text);
+              if (quantity == null || quantity < 1) {
+                Get.snackbar(
+                  'Error',
+                  'Please enter a valid quantity',
+                  snackPosition: SnackPosition.TOP,
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+                return;
+              }
+
+              // Validate custom price if enabled
+              double? customPrice;
+              if (useCustomPrice.value &&
+                  customPriceController.text.isNotEmpty) {
+                customPrice = double.tryParse(customPriceController.text);
+                if (customPrice == null || customPrice < 0) {
+                  Get.snackbar(
+                    'Error',
+                    'Please enter a valid price',
+                    snackPosition: SnackPosition.TOP,
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                  return;
+                }
+              }
+
+              discoveryController.addItem(SelectedItem(
+                id: item['id'],
+                name: item['item'],
+                brand: item['brand'],
+                originalPrice: double.parse(item['price'].toString()),
+                quantity: quantity,
+                customPrice: customPrice,
+              ));
+              Navigator.pop(context);
+            },
+            child: const Text('Add'),
+          ),
+        ],
       ),
     );
   }

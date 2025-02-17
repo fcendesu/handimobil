@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/discovery_controller.dart';
 import 'widgets/item_selector_widget.dart';
+import 'widgets/image_picker_widget.dart';
 
 class DiscoveryPage extends StatelessWidget {
   DiscoveryPage({super.key});
@@ -75,6 +76,8 @@ class DiscoveryPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ItemSelectorWidget(),
+            const SizedBox(height: 16),
+            ImagePickerWidget(discoveryController: discoveryController),
             const SizedBox(height: 16),
             TextField(
               controller: noteToCustomerController,

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import '../constants/constants.dart';
 import '../models/selected_item.dart';
 
@@ -10,6 +11,8 @@ class DiscoveryController extends GetxController {
   var isLoading = false.obs;
   final box = GetStorage();
   var selectedItems = <SelectedItem>[].obs;
+  final selectedImages = <XFile>[].obs;
+  final _picker = ImagePicker();
 
   void addItem(SelectedItem item) {
     selectedItems.add(item);
@@ -17,6 +20,24 @@ class DiscoveryController extends GetxController {
 
   void removeItem(int id) {
     selectedItems.removeWhere((item) => item.id == id);
+  }
+
+  Future<void> pickImages() async {
+    final List<XFile> images = await _picker.pickMultiImage();
+    if (images.isNotEmpty) {
+      selectedImages.addAll(images);
+    }
+  }
+
+  Future<void> takePhoto() async {
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      selectedImages.add(photo);
+    }
+  }
+
+  void removeImage(int index) {
+    selectedImages.removeAt(index);
   }
 
   Future<bool> storeDiscovery({
@@ -44,14 +65,25 @@ class DiscoveryController extends GetxController {
         return false;
       }
 
-      // Create the request body with items as an empty array by default
-      Map<String, dynamic> body = {
+      // Create multipart request
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$url/discoveries'),
+      );
+
+      // Add headers
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $storedToken',
+      });
+
+      // Add basic fields
+      Map<String, String> fields = {
         'customer_name': customerName,
         'customer_phone': customerPhone,
         'customer_email': customerEmail,
         'discovery': discovery,
         'todo_list': todoList,
-        'items': [], // Initialize empty array
         if (noteToCustomer?.isNotEmpty ?? false)
           'note_to_customer': noteToCustomer!,
         if (noteToHandi?.isNotEmpty ?? false) 'note_to_handi': noteToHandi!,
@@ -59,42 +91,59 @@ class DiscoveryController extends GetxController {
           'payment_method': paymentMethod!,
       };
 
-      // Add items if there are any selected
+      // Add items array
       if (selectedItems.isNotEmpty) {
-        body['items'] = selectedItems.map((item) => item.toJson()).toList();
+        for (var i = 0; i < selectedItems.length; i++) {
+          var item = selectedItems[i];
+          fields['items[$i][id]'] = item.id.toString();
+          fields['items[$i][quantity]'] = item.quantity.toString();
+          if (item.customPrice != null) {
+            fields['items[$i][custom_price]'] = item.customPrice.toString();
+          }
+        }
+      } else {
+        fields['items'] = '[]'; // Empty array if no items selected
       }
 
-      print('Request body: ${json.encode(body)}'); // Debug print
+      request.fields.addAll(fields);
 
-      var response = await http.post(
-        Uri.parse('$url/discoveries'),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $storedToken',
-        },
-        body: json.encode(body),
-      );
+      // Add images
+      if (selectedImages.isNotEmpty) {
+        for (var i = 0; i < selectedImages.length; i++) {
+          final file = await http.MultipartFile.fromPath(
+            'images[]',
+            selectedImages[i].path,
+          );
+          request.files.add(file);
+        }
+      }
 
-      print('Response status: ${response.statusCode}'); // Debug print
-      print('Response body: ${response.body}'); // Debug print
+      // Debug prints
+      print('Request fields: ${request.fields}');
+      print('Request files: ${request.files.length}');
 
-      final responseData = json.decode(response.body);
+      // Send request
+      final response = await request.send();
+      final responseData = await response.stream.bytesToString();
+      final jsonResponse = json.decode(responseData);
+
+      print('Response: $jsonResponse');
 
       if (response.statusCode == 201) {
         Get.snackbar(
           'Success',
-          responseData['message'] ?? 'Discovery created successfully',
+          jsonResponse['message'] ?? 'Discovery created successfully',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
         selectedItems.clear();
+        selectedImages.clear();
         return true;
       } else {
         Get.snackbar(
           'Error',
-          responseData['message'] ?? 'Failed to create discovery',
+          jsonResponse['message'] ?? 'Failed to create discovery',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -102,7 +151,7 @@ class DiscoveryController extends GetxController {
         return false;
       }
     } catch (e) {
-      print('Error: $e'); // Debug print
+      print('Error: $e');
       Get.snackbar(
         'Error',
         'An error occurred: ${e.toString()}',
