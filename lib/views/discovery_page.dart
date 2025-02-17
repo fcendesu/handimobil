@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/discovery_controller.dart';
+import 'widgets/item_selector_widget.dart';
 
 class DiscoveryPage extends StatelessWidget {
   DiscoveryPage({super.key});
@@ -72,6 +73,8 @@ class DiscoveryPage extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 16),
+            ItemSelectorWidget(),
             const SizedBox(height: 16),
             TextField(
               controller: noteToCustomerController,
