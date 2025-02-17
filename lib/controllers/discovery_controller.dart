@@ -49,6 +49,14 @@ class DiscoveryController extends GetxController {
     String? noteToCustomer,
     String? noteToHandi,
     String? paymentMethod,
+    String? completionTime,
+    String? offerValidUntil,
+    String? serviceCost,
+    String? transportationCost,
+    String? laborCost,
+    String? extraFee,
+    String? discountRate,
+    String? discountAmount,
   }) async {
     try {
       isLoading.value = true;
@@ -89,6 +97,18 @@ class DiscoveryController extends GetxController {
         if (noteToHandi?.isNotEmpty ?? false) 'note_to_handi': noteToHandi!,
         if (paymentMethod?.isNotEmpty ?? false)
           'payment_method': paymentMethod!,
+        if (completionTime?.isNotEmpty ?? false)
+          'completion_time': completionTime!,
+        if (offerValidUntil?.isNotEmpty ?? false)
+          'offer_valid_until': offerValidUntil!,
+        if (serviceCost?.isNotEmpty ?? false) 'service_cost': serviceCost!,
+        if (transportationCost?.isNotEmpty ?? false)
+          'transportation_cost': transportationCost!,
+        if (laborCost?.isNotEmpty ?? false) 'labor_cost': laborCost!,
+        if (extraFee?.isNotEmpty ?? false) 'extra_fee': extraFee!,
+        if (discountRate?.isNotEmpty ?? false) 'discount_rate': discountRate!,
+        if (discountAmount?.isNotEmpty ?? false)
+          'discount_amount': discountAmount!,
       };
 
       // Add items array

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart'; // Add this import at the top
 import '../controllers/discovery_controller.dart';
 import 'widgets/item_selector_widget.dart';
 import 'widgets/image_picker_widget.dart';
@@ -17,6 +18,19 @@ class DiscoveryPage extends StatelessWidget {
       TextEditingController();
   final TextEditingController noteToHandiController = TextEditingController();
   final TextEditingController paymentMethodController = TextEditingController();
+
+  final TextEditingController completionTimeController =
+      TextEditingController();
+  final TextEditingController offerValidUntilController =
+      TextEditingController();
+  final TextEditingController serviceCostController = TextEditingController();
+  final TextEditingController transportationCostController =
+      TextEditingController();
+  final TextEditingController laborCostController = TextEditingController();
+  final TextEditingController extraFeeController = TextEditingController();
+  final TextEditingController discountRateController = TextEditingController();
+  final TextEditingController discountAmountController =
+      TextEditingController();
 
   final DiscoveryController discoveryController =
       Get.put(DiscoveryController());
@@ -104,6 +118,108 @@ class DiscoveryPage extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: completionTimeController,
+              decoration: const InputDecoration(
+                labelText: 'Completion Time (days) *',
+                helperText: 'Enter number of days needed to complete the work',
+                border: OutlineInputBorder(),
+                suffixText: 'days',
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly, // Allow only digits
+              ],
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: offerValidUntilController,
+              decoration: const InputDecoration(
+                labelText: 'Offer Valid Until',
+                border: OutlineInputBorder(),
+                suffixIcon: Icon(Icons.calendar_today),
+              ),
+              readOnly: true,
+              onTap: () async {
+                final DateTime? picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(const Duration(days: 365)),
+                );
+                if (picked != null) {
+                  offerValidUntilController.text =
+                      picked.toIso8601String().split('T')[0];
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: serviceCostController,
+              decoration: const InputDecoration(
+                labelText: 'Service Cost',
+                border: OutlineInputBorder(),
+                prefixText: '\$',
+              ),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: transportationCostController,
+              decoration: const InputDecoration(
+                labelText: 'Transportation Cost',
+                border: OutlineInputBorder(),
+                prefixText: '\$',
+              ),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: laborCostController,
+              decoration: const InputDecoration(
+                labelText: 'Labor Cost',
+                border: OutlineInputBorder(),
+                prefixText: '\$',
+              ),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: extraFeeController,
+              decoration: const InputDecoration(
+                labelText: 'Extra Fee',
+                border: OutlineInputBorder(),
+                prefixText: '\$',
+              ),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: discountRateController,
+              decoration: const InputDecoration(
+                labelText: 'Discount Rate (%)',
+                border: OutlineInputBorder(),
+                suffixText: '%',
+              ),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: discountAmountController,
+              decoration: const InputDecoration(
+                labelText: 'Discount Amount',
+                border: OutlineInputBorder(),
+                prefixText: '\$',
+              ),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+            ),
             const SizedBox(height: 24),
             Obx(() => ElevatedButton(
                   onPressed: discoveryController.isLoading.value
@@ -123,7 +239,8 @@ class DiscoveryPage extends StatelessWidget {
                             return;
                           }
 
-                          await discoveryController.storeDiscovery(
+                          final success =
+                              await discoveryController.storeDiscovery(
                             customerName: customerNameController.text.trim(),
                             customerPhone: customerPhoneController.text.trim(),
                             customerEmail: customerEmailController.text.trim(),
@@ -133,10 +250,22 @@ class DiscoveryPage extends StatelessWidget {
                                 noteToCustomerController.text.trim(),
                             noteToHandi: noteToHandiController.text.trim(),
                             paymentMethod: paymentMethodController.text.trim(),
+                            completionTime:
+                                completionTimeController.text.trim(),
+                            offerValidUntil:
+                                offerValidUntilController.text.trim(),
+                            serviceCost: serviceCostController.text.trim(),
+                            transportationCost:
+                                transportationCostController.text.trim(),
+                            laborCost: laborCostController.text.trim(),
+                            extraFee: extraFeeController.text.trim(),
+                            discountRate: discountRateController.text.trim(),
+                            discountAmount:
+                                discountAmountController.text.trim(),
                           );
 
                           // Clear the form after successful submission
-                          if (!discoveryController.isLoading.value) {
+                          if (success) {
                             customerNameController.clear();
                             customerPhoneController.clear();
                             customerEmailController.clear();
@@ -145,6 +274,14 @@ class DiscoveryPage extends StatelessWidget {
                             noteToCustomerController.clear();
                             noteToHandiController.clear();
                             paymentMethodController.clear();
+                            completionTimeController.clear();
+                            offerValidUntilController.clear();
+                            serviceCostController.clear();
+                            transportationCostController.clear();
+                            laborCostController.clear();
+                            extraFeeController.clear();
+                            discountRateController.clear();
+                            discountAmountController.clear();
                           }
                         },
                   child: discoveryController.isLoading.value
