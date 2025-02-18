@@ -4,11 +4,17 @@ import 'package:handimobil/views/login_page.dart';
 import 'package:handimobil/views/home.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:handimobil/controllers/authentication.dart';
+import 'bindings/app_binding.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-  runApp(const MyApp());
+  runApp(GetMaterialApp(
+    debugShowCheckedModeBanner: false,
+    title: 'HandiMobil',
+    initialBinding: AppBinding(),
+    home: InitialScreen(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
