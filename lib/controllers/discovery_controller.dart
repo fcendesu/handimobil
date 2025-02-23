@@ -588,7 +588,7 @@ class DiscoveryController extends GetxController {
 
         Get.snackbar(
           'Success',
-          'Share URL copied to clipboard',
+          'Paylaşım URL\'si kopyalandı',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
           colorText: Colors.white,
