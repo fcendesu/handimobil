@@ -40,7 +40,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Edit Item'),
+      title: const Text('Malzeme Düzenle'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -48,7 +48,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
             TextField(
               controller: itemNameController,
               decoration: const InputDecoration(
-                labelText: 'Item Name',
+                labelText: 'Malzeme Adı',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -56,7 +56,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
             TextField(
               controller: brandController,
               decoration: const InputDecoration(
-                labelText: 'Brand',
+                labelText: 'Marka',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -65,7 +65,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
               controller: priceController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                labelText: 'Price',
+                labelText: 'Fiyat',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -75,7 +75,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: const Text('İptal'),
         ),
         TextButton(
           onPressed: () async {
@@ -87,7 +87,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
             );
             Navigator.pop(context);
           },
-          child: const Text('Update'),
+          child: const Text('Güncelle'),
         ),
       ],
     );

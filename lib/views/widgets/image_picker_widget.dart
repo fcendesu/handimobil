@@ -18,13 +18,13 @@ class ImagePickerWidget extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select Image Source'),
+          title: const Text('Resim Kaynağını Seç'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text('Camera'),
+                title: const Text('Kamera'),
                 onTap: () async {
                   Navigator.pop(context);
                   final XFile? photo =
@@ -36,7 +36,7 @@ class ImagePickerWidget extends StatelessWidget {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
+                title: const Text('Galeri'),
                 onTap: () async {
                   Navigator.pop(context);
                   final List<XFile> images = await _picker.pickMultiImage();
@@ -79,14 +79,14 @@ class ImagePickerWidget extends StatelessWidget {
               final selectedImages = discoveryController.selectedImages;
 
               if (existingImages.isEmpty && selectedImages.isEmpty) {
-                return const Text('No images selected');
+                return const Text('Seçilen resim yok');
               }
 
               return Column(
                 children: [
                   // Existing Images
                   if (existingImages.isNotEmpty) ...[
-                    const Text('Existing Images',
+                    const Text('Mevcut Görüntüler',
                         style: TextStyle(fontWeight: FontWeight.w500)),
                     const SizedBox(height: 8),
                     SizedBox(
@@ -131,7 +131,8 @@ class ImagePickerWidget extends StatelessWidget {
                                       },
                                       errorBuilder:
                                           (context, error, stackTrace) {
-                                        print('Error loading image: $error');
+                                        print(
+                                            'Resim yüklenirken hata oluştu: $error');
                                         return const Center(
                                           child: Icon(Icons.error_outline,
                                               color: Colors.red),
@@ -171,7 +172,7 @@ class ImagePickerWidget extends StatelessWidget {
                   // New Selected Images
                   if (selectedImages.isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    const Text('New Images',
+                    const Text('Yeni Görüntüler',
                         style: TextStyle(fontWeight: FontWeight.w500)),
                     const SizedBox(height: 8),
                     SizedBox(

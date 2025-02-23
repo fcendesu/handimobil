@@ -4,6 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import '../controllers/discovery_controller.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'discovery_details_page.dart';
+import '../controllers/authentication.dart';
 
 class HomePage extends StatelessWidget {
   final DiscoveryController discoveryController = Get.find();
@@ -30,6 +31,12 @@ class HomePage extends StatelessWidget {
             ],
           ),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                Get.find<AuthenticationController>().logout();
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () => discoveryController.fetchDiscoveries(),

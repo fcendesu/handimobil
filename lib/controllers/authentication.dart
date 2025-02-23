@@ -135,4 +135,62 @@ class AuthenticationController extends GetxController {
       Get.offAll(() => const LoginPage());
     }
   }
+
+  Future<void> logout() async {
+    try {
+      isLoading.value = true;
+      var storedToken = box.read('token');
+
+      if (storedToken == null) {
+        Get.offAll(() => const LoginPage());
+        return;
+      }
+
+      var response = await http.post(
+        Uri.parse('$url/logout'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $storedToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Clear stored token
+        box.remove('token');
+        token.value = '';
+
+        Get.snackbar(
+          'Success',
+          'Logged out successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(16),
+          duration: const Duration(seconds: 3),
+        );
+
+        // Navigate to login page
+        Get.offAll(() => const LoginPage());
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to logout',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      print('Logout error: $e');
+      Get.snackbar(
+        'Error',
+        'An error occurred during logout',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

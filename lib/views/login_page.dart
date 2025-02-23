@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'Login Page',
+                    'Giriş Yap',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 30),
                   InputWidget(
-                    hintText: 'Password',
+                    hintText: 'Parola',
                     controller: passwordController,
                     obscureText: true,
                   ),
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.white,
                               )
                             : Text(
-                                'Login',
+                                'Giriş Yap',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       Get.to(() => const RegisterPage());
                     },
                     child: Text(
-                      'Register',
+                      'Kayıt Ol',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

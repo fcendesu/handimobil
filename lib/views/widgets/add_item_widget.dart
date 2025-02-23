@@ -20,7 +20,7 @@ class AddItemWidget extends StatelessWidget {
           TextField(
             controller: itemNameController,
             decoration: InputDecoration(
-              labelText: 'Item Name',
+              labelText: 'Malzeme Adı',
               border: OutlineInputBorder(),
             ),
           ),
@@ -28,7 +28,7 @@ class AddItemWidget extends StatelessWidget {
           TextField(
             controller: brandController,
             decoration: InputDecoration(
-              labelText: 'Brand',
+              labelText: 'Marka',
               border: OutlineInputBorder(),
             ),
           ),
@@ -37,7 +37,7 @@ class AddItemWidget extends StatelessWidget {
             controller: priceController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              labelText: 'Price',
+              labelText: 'Fiyat',
               border: OutlineInputBorder(),
             ),
           ),
@@ -65,7 +65,7 @@ class AddItemWidget extends StatelessWidget {
               return itemController.isLoading.value
                   ? CircularProgressIndicator(color: Colors.white)
                   : Text(
-                      'Add Item',
+                      'Malzeme Ekle',
                       style: TextStyle(fontSize: 18),
                     );
             }),
@@ -73,7 +73,7 @@ class AddItemWidget extends StatelessWidget {
           SizedBox(height: 30),
           TextField(
             decoration: InputDecoration(
-              labelText: 'Search Items',
+              labelText: 'Ara...',
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.search),
             ),

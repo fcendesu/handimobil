@@ -31,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Register Pagee',
+                  'Kayıt Ol',
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -39,7 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 SizedBox(height: 30),
                 InputWidget(
-                  hintText: 'Name',
+                  hintText: 'Adı Soyadı',
                   controller: nameController,
                   obscureText: false,
                 ),
@@ -51,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 SizedBox(height: 30),
                 InputWidget(
-                  hintText: 'Password',
+                  hintText: 'Parola',
                   controller: passwordController,
                   obscureText: true,
                 ),
@@ -81,7 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             )
                           : Text(
-                              'Register',
+                              'Kayıt Ol',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -96,7 +96,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Get.to(() => const LoginPage());
                   },
                   child: Text(
-                    'Login',
+                    'Giriş Yap',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
