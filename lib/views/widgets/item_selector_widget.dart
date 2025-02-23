@@ -16,7 +16,7 @@ class ItemSelectorWidget extends StatelessWidget {
       children: [
         TextField(
           decoration: InputDecoration(
-            labelText: 'Search Items',
+            labelText: 'Malzeme arama',
             border: OutlineInputBorder(),
             prefixIcon: Icon(Icons.search),
           ),
@@ -39,7 +39,7 @@ class ItemSelectorWidget extends StatelessWidget {
                 return ListTile(
                   title: Text(item['item']),
                   subtitle:
-                      Text('Brand: ${item['brand']}, Price: ${item['price']}'),
+                      Text('Marka: ${item['brand']}, Fiyat: ${item['price']}'),
                   trailing: IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {
@@ -58,8 +58,8 @@ class ItemSelectorWidget extends StatelessWidget {
                         child: ListTile(
                           title: Text(item.name),
                           subtitle: Text(
-                            'Quantity: ${item.quantity}\n'
-                            'Price: ${item.customPrice ?? item.originalPrice}',
+                            'Miktar: ${item.quantity}\n'
+                            'Fiyat: ${item.customPrice ?? item.originalPrice}',
                           ),
                           trailing: IconButton(
                             icon: Icon(Icons.delete),
@@ -82,14 +82,14 @@ class ItemSelectorWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Add ${item['item']}'),
+        title: Text('Ekle ${item['item']}'),
         content: Obx(() => Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: quantityController,
                   decoration: const InputDecoration(
-                    labelText: 'Quantity *',
+                    labelText: 'Miktar *',
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
@@ -101,7 +101,7 @@ class ItemSelectorWidget extends StatelessWidget {
                       value: useCustomPrice.value,
                       onChanged: (value) => useCustomPrice.value = value!,
                     ),
-                    const Text('Use custom price'),
+                    const Text('Farklı fiyat kullan'),
                   ],
                 ),
                 if (useCustomPrice.value) ...[
@@ -109,7 +109,7 @@ class ItemSelectorWidget extends StatelessWidget {
                   TextField(
                     controller: customPriceController,
                     decoration: const InputDecoration(
-                      labelText: 'Custom Price',
+                      labelText: 'Farklı Fiyat',
                       border: OutlineInputBorder(),
                     ),
                     keyboardType:
@@ -121,7 +121,7 @@ class ItemSelectorWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('İptal'),
           ),
           TextButton(
             onPressed: () {
@@ -129,7 +129,7 @@ class ItemSelectorWidget extends StatelessWidget {
               if (quantityController.text.isEmpty) {
                 Get.snackbar(
                   'Error',
-                  'Please enter a quantity',
+                  'Lütfen miktarı girin',
                   snackPosition: SnackPosition.TOP,
                   backgroundColor: Colors.red,
                   colorText: Colors.white,
@@ -141,7 +141,7 @@ class ItemSelectorWidget extends StatelessWidget {
               if (quantity == null || quantity < 1) {
                 Get.snackbar(
                   'Error',
-                  'Please enter a valid quantity',
+                  'Lütfen geçerli bir miktar girin',
                   snackPosition: SnackPosition.TOP,
                   backgroundColor: Colors.red,
                   colorText: Colors.white,
@@ -157,7 +157,7 @@ class ItemSelectorWidget extends StatelessWidget {
                 if (customPrice == null || customPrice < 0) {
                   Get.snackbar(
                     'Error',
-                    'Please enter a valid price',
+                    'Lütfe geçerli bir fiyat girin',
                     snackPosition: SnackPosition.TOP,
                     backgroundColor: Colors.red,
                     colorText: Colors.white,
@@ -176,7 +176,7 @@ class ItemSelectorWidget extends StatelessWidget {
               ));
               Navigator.pop(context);
             },
-            child: const Text('Add'),
+            child: const Text('Ekle'),
           ),
         ],
       ),

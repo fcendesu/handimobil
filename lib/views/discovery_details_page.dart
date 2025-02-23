@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart'; // Add this import at the top
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/discovery_controller.dart';
@@ -17,20 +17,16 @@ class DiscoveryDetailsPage extends StatefulWidget {
 
 class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
   final DiscoveryController discoveryController = Get.find();
-
   final TextEditingController customerNameController = TextEditingController();
   final TextEditingController customerPhoneController = TextEditingController();
   final TextEditingController customerEmailController = TextEditingController();
-  final TextEditingController addressController =
-      TextEditingController(); // Add the address controller
-  final TextEditingController discoveryTextController =
-      TextEditingController(); // Renamed to avoid conflict
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController discoveryTextController = TextEditingController();
   final TextEditingController todoListController = TextEditingController();
   final TextEditingController noteToCustomerController =
       TextEditingController();
   final TextEditingController noteToHandiController = TextEditingController();
   final TextEditingController paymentMethodController = TextEditingController();
-
   final TextEditingController completionTimeController =
       TextEditingController();
   final TextEditingController offerValidUntilController =
@@ -51,7 +47,6 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
       discoveryController.fetchDiscoveryDetails(widget.discoveryId).then((_) {
         final discovery = discoveryController.currentDiscovery.value;
         if (discovery != null) {
-          // Populate basic fields
           customerNameController.text = discovery['customer_name'] ?? '';
           customerPhoneController.text = discovery['customer_phone'] ?? '';
           customerEmailController.text = discovery['customer_email'] ?? '';
@@ -65,7 +60,6 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
               discovery['completion_time']?.toString() ?? '';
           offerValidUntilController.text = discovery['offer_valid_until'] ?? '';
 
-          // Populate costs
           final costs = discovery['costs'] ?? {};
           serviceCostController.text = costs['service_cost']?.toString() ?? '';
           transportationCostController.text =
@@ -73,29 +67,24 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
           laborCostController.text = costs['labor_cost']?.toString() ?? '';
           extraFeeController.text = costs['extra_fee']?.toString() ?? '';
 
-          // Populate discounts
           final discounts = discovery['discounts'] ?? {};
           discountRateController.text = discounts['rate']?.toString() ?? '';
           discountAmountController.text = discounts['amount']?.toString() ?? '';
 
-          // Update items in controller
           if (discovery['items'] != null) {
             discoveryController.selectedItems.value =
                 List<Map<String, dynamic>>.from(discovery['items'])
                     .map((item) => SelectedItem(
                           id: item['id'],
-                          name: item[
-                              'item'], // API returns 'item' but model uses 'name'
+                          name: item['item'],
                           brand: item['brand'],
-                          originalPrice: item['base_price']?.toDouble() ??
-                              0.0, // API returns 'base_price' but model uses 'originalPrice'
+                          originalPrice: item['base_price']?.toDouble() ?? 0.0,
                           quantity: item['quantity'],
                           customPrice: item['custom_price']?.toDouble(),
                         ))
                     .toList();
           }
 
-          // Update images in controller
           if (discovery['image_urls'] != null) {
             discoveryController.existingImages.value =
                 List<String>.from(discovery['image_urls']);
@@ -107,7 +96,6 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
 
   @override
   void dispose() {
-    // Dispose all TextEditingControllers
     customerNameController.dispose();
     customerPhoneController.dispose();
     customerEmailController.dispose();
@@ -126,7 +114,6 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
     discountRateController.dispose();
     discountAmountController.dispose();
 
-    // Clear controller data
     discoveryController.selectedItems.clear();
     discoveryController.existingImages.clear();
     discoveryController.selectedImages.clear();
@@ -140,7 +127,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail Discovery'),
+        title: const Text('Keşif Detayı'),
         actions: [
           Obx(() => TextButton(
                 onPressed: discoveryController.isLoading.value
@@ -155,10 +142,8 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
                           strokeWidth: 2,
                         ),
                       )
-                    : const Text('Edit',
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0,
-                                0))), // Changed from 'Save' to 'Edit'
+                    : const Text('Düzenle',
+                        style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
               )),
         ],
       ),
@@ -167,14 +152,13 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Add this status card at the top
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
                     const Text(
-                      'Status: ',
+                      'Durum: ',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -189,17 +173,17 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
                           value: currentStatus,
                           isExpanded: true,
                           items: [
-                            'pending',
-                            'in_progress',
-                            'completed',
-                            'cancelled'
-                          ].map((String status) {
+                            ['pending', 'Beklemede'],
+                            ['in_progress', 'Sürmekte'],
+                            ['completed', 'Tamamlandı'],
+                            ['cancelled', 'İptal Edildi']
+                          ].map((List<String> status) {
                             return DropdownMenuItem<String>(
-                              value: status,
+                              value: status[0],
                               child: Text(
-                                status.toUpperCase().replaceAll('_', ' '),
+                                status[1],
                                 style: TextStyle(
-                                  color: _getStatusColor(status),
+                                  color: _getStatusColor(status[0]),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -222,7 +206,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: customerNameController,
               decoration: const InputDecoration(
-                labelText: 'Customer Name *',
+                labelText: 'Müsteri Adı *',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -230,7 +214,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: customerPhoneController,
               decoration: const InputDecoration(
-                labelText: 'Customer Phone *',
+                labelText: 'Telefon Numarası *',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -238,7 +222,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: customerEmailController,
               decoration: const InputDecoration(
-                labelText: 'Customer Email *',
+                labelText: 'Email *',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.emailAddress,
@@ -248,8 +232,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
               controller: addressController,
               maxLines: 3,
               decoration: const InputDecoration(
-                labelText: 'Address',
-                helperText: 'Enter customer\'s address',
+                labelText: 'Adres',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -258,7 +241,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
               controller: discoveryTextController,
               maxLines: 3,
               decoration: const InputDecoration(
-                labelText: 'Discovery *',
+                labelText: 'Keşif *',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -267,7 +250,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
               controller: todoListController,
               maxLines: 2,
               decoration: const InputDecoration(
-                labelText: 'Todo List *',
+                labelText: 'Yapılacaklar Listesi *',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -280,7 +263,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
               controller: noteToCustomerController,
               maxLines: 2,
               decoration: const InputDecoration(
-                labelText: 'Note to Customer',
+                labelText: 'Not',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -289,7 +272,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
               controller: noteToHandiController,
               maxLines: 2,
               decoration: const InputDecoration(
-                labelText: 'Note to Handi',
+                labelText: 'Özel Not',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -297,7 +280,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: paymentMethodController,
               decoration: const InputDecoration(
-                labelText: 'Payment Method',
+                labelText: 'Ödeme Şekli',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -305,21 +288,19 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: completionTimeController,
               decoration: const InputDecoration(
-                labelText: 'Completion Time (days) *',
-                helperText: 'Enter number of days needed to complete the work',
+                labelText: 'Tamamlanma Süresi (gün)',
                 border: OutlineInputBorder(),
-                suffixText: 'days',
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                FilteringTextInputFormatter.digitsOnly,
               ],
             ),
             const SizedBox(height: 16),
             TextField(
               controller: offerValidUntilController,
               decoration: const InputDecoration(
-                labelText: 'Offer Valid Until',
+                labelText: 'Teklif Geçerlilik Tarihi',
                 border: OutlineInputBorder(),
                 suffixIcon: Icon(Icons.calendar_today),
               ),
@@ -341,7 +322,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: serviceCostController,
               decoration: const InputDecoration(
-                labelText: 'Service Cost',
+                labelText: 'Hizmet Masrafı',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -351,7 +332,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: transportationCostController,
               decoration: const InputDecoration(
-                labelText: 'Transportation Cost',
+                labelText: 'Ulaşım Masrafı',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -361,7 +342,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: laborCostController,
               decoration: const InputDecoration(
-                labelText: 'Labor Cost',
+                labelText: 'İşçilik Masrafı',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -371,7 +352,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: extraFeeController,
               decoration: const InputDecoration(
-                labelText: 'Extra Fee',
+                labelText: 'Ekstra Masraflar',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -381,7 +362,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: discountRateController,
               decoration: const InputDecoration(
-                labelText: 'Discount Rate (%)',
+                labelText: 'İndirim Oranı (%)',
                 border: OutlineInputBorder(),
                 suffixText: '%',
               ),
@@ -392,7 +373,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
             TextField(
               controller: discountAmountController,
               decoration: const InputDecoration(
-                labelText: 'Discount Amount',
+                labelText: 'İndirim Miktarı',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -406,7 +387,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Total Cost Summary',
+                      'Toplam Masraf Tutarı',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -417,7 +398,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Total Amount:',
+                          'Toplam Masraf:',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -438,8 +419,6 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
               ),
             ),
             const SizedBox(height: 24),
-
-            // Add update button at the bottom
             Obx(() => ElevatedButton(
                   onPressed: discoveryController.isLoading.value
                       ? null
@@ -457,7 +436,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
                           ),
                         )
                       : const Text(
-                          'Update Discovery',
+                          'Güncelle',
                           style: TextStyle(fontSize: 16),
                         ),
                 )),
@@ -467,7 +446,6 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
     );
   }
 
-  // Add this method to handle update
   void _updateDiscovery() async {
     if (customerNameController.text.isEmpty ||
         customerPhoneController.text.isEmpty ||
@@ -475,7 +453,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
         discoveryTextController.text.isEmpty) {
       Get.snackbar(
         'Error',
-        'Please fill in all required fields',
+        'Müşteri adı, telefon numarası ve keşif alanları boş bırakılamaz.',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -511,17 +489,16 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
     }
   }
 
-  // Add this method in the DiscoveryDetailsPage class
   Color _getStatusColor(String status) {
     switch (status) {
       case 'pending':
-        return Colors.orange;
+        return Colors.orange; // Beklemede
       case 'in_progress':
-        return Colors.blue;
+        return Colors.blue; // Sürmekte
       case 'completed':
-        return Colors.green;
+        return Colors.green; // Tamamlandı
       case 'cancelled':
-        return Colors.red;
+        return Colors.red; // İptal Edildi
       default:
         return Colors.grey;
     }

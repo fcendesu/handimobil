@@ -16,15 +16,15 @@ class CustomNavigationBar extends StatelessWidget {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          label: 'Home',
+          label: 'İşler',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.explore),
-          label: 'Discovery',
+          label: 'Keşif',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.production_quantity_limits_outlined),
-          label: 'Item',
+          label: 'Malzeme',
         ),
       ],
       currentIndex: selectedIndex,

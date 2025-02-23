@@ -41,7 +41,7 @@ class DiscoveryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Discovery'),
+        title: const Text('Yeni Keşif'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -51,7 +51,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: customerNameController,
               decoration: const InputDecoration(
-                labelText: 'Customer Name *',
+                labelText: 'Müşteri *',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -59,7 +59,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: customerPhoneController,
               decoration: const InputDecoration(
-                labelText: 'Customer Phone *',
+                labelText: 'Telefon Numarası *',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -67,7 +67,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: customerEmailController,
               decoration: const InputDecoration(
-                labelText: 'Customer Email *',
+                labelText: 'Email *',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.emailAddress,
@@ -77,8 +77,7 @@ class DiscoveryPage extends StatelessWidget {
               controller: addressController,
               maxLines: 3,
               decoration: const InputDecoration(
-                labelText: 'Address',
-                helperText: 'Enter customer\'s address',
+                labelText: 'Adres',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -87,7 +86,7 @@ class DiscoveryPage extends StatelessWidget {
               controller: discoveryTextController,
               maxLines: 3,
               decoration: const InputDecoration(
-                labelText: 'Discovery *',
+                labelText: 'Keşif *',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -96,7 +95,7 @@ class DiscoveryPage extends StatelessWidget {
               controller: todoListController,
               maxLines: 2,
               decoration: const InputDecoration(
-                labelText: 'Todo List *',
+                labelText: 'Yapılacaklar Listesi *',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -109,7 +108,7 @@ class DiscoveryPage extends StatelessWidget {
               controller: noteToCustomerController,
               maxLines: 2,
               decoration: const InputDecoration(
-                labelText: 'Note to Customer',
+                labelText: 'Not',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -118,7 +117,7 @@ class DiscoveryPage extends StatelessWidget {
               controller: noteToHandiController,
               maxLines: 2,
               decoration: const InputDecoration(
-                labelText: 'Note to Handi',
+                labelText: 'Özel Not',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -126,7 +125,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: paymentMethodController,
               decoration: const InputDecoration(
-                labelText: 'Payment Method',
+                labelText: 'Ödeme Şekli',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -134,10 +133,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: completionTimeController,
               decoration: const InputDecoration(
-                labelText: 'Completion Time (days) *',
-                helperText: 'Enter number of days needed to complete the work',
-                border: OutlineInputBorder(),
-                suffixText: 'days',
+                labelText: 'Tamamlanma Süresi (gün) *',
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
@@ -148,7 +144,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: offerValidUntilController,
               decoration: const InputDecoration(
-                labelText: 'Offer Valid Until',
+                labelText: 'Teklif Geçerlilik Tarihi *',
                 border: OutlineInputBorder(),
                 suffixIcon: Icon(Icons.calendar_today),
               ),
@@ -170,7 +166,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: serviceCostController,
               decoration: const InputDecoration(
-                labelText: 'Service Cost',
+                labelText: 'Hizmet Masrafı',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -180,7 +176,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: transportationCostController,
               decoration: const InputDecoration(
-                labelText: 'Transportation Cost',
+                labelText: 'Ulaşım Masrafı',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -190,7 +186,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: laborCostController,
               decoration: const InputDecoration(
-                labelText: 'Labor Cost',
+                labelText: 'İşçilik Masrafı',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -200,7 +196,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: extraFeeController,
               decoration: const InputDecoration(
-                labelText: 'Extra Fee',
+                labelText: 'Ekstra Masraflar',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -210,7 +206,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: discountRateController,
               decoration: const InputDecoration(
-                labelText: 'Discount Rate (%)',
+                labelText: 'İndirim Oranı (%)',
                 border: OutlineInputBorder(),
                 suffixText: '%',
               ),
@@ -221,7 +217,7 @@ class DiscoveryPage extends StatelessWidget {
             TextField(
               controller: discountAmountController,
               decoration: const InputDecoration(
-                labelText: 'Discount Amount',
+                labelText: 'İndirim Miktarı',
                 border: OutlineInputBorder(),
               ),
               keyboardType:
@@ -238,7 +234,7 @@ class DiscoveryPage extends StatelessWidget {
                               discoveryTextController.text.isEmpty) {
                             Get.snackbar(
                               'Error',
-                              'Please fill in all required fields',
+                              'Lütfen zorunlu alanları doldurun.',
                               snackPosition: SnackPosition.TOP,
                               backgroundColor: Colors.red,
                               colorText: Colors.white,
@@ -296,7 +292,7 @@ class DiscoveryPage extends StatelessWidget {
                         },
                   child: discoveryController.isLoading.value
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Submit Discovery'),
+                      : const Text('Kaydet'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),

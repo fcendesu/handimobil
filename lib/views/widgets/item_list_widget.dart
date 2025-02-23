@@ -23,8 +23,8 @@ class ItemListWidget extends StatelessWidget {
           return Center(
             child: Text(
               itemController.searchText.value.isEmpty
-                  ? 'No items available'
-                  : 'No items found for "${itemController.searchText.value}"',
+                  ? 'Hiçbir malzeme bulunamadı'
+                  : 'Hiçbir malzeme bulunamadı "${itemController.searchText.value}"',
               style: TextStyle(fontSize: 16),
             ),
           );
@@ -39,7 +39,7 @@ class ItemListWidget extends StatelessWidget {
               child: ListTile(
                 title: Text(item['item']),
                 subtitle:
-                    Text('Brand: ${item['brand']}\nPrice: ${item['price']}'),
+                    Text('Marka: ${item['brand']}\nFiyat: ${item['price']}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -61,20 +61,20 @@ class ItemListWidget extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: const Text('Delete Item'),
+                            title: const Text('Malzeme Silme'),
                             content: const Text(
-                                'Are you sure you want to delete this item?'),
+                                'Bu öğeyi silmek istediğinizden emin misiniz?'),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
+                                child: const Text('İptal'),
                               ),
                               TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
                                   itemController.deleteItem(item['id']);
                                 },
-                                child: const Text('Delete'),
+                                child: const Text('Sil'),
                               ),
                             ],
                           ),

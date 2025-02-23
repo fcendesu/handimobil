@@ -9,6 +9,21 @@ import '../controllers/authentication.dart';
 class HomePage extends StatelessWidget {
   final DiscoveryController discoveryController = Get.find();
 
+  String _getLocalizedStatus(String status) {
+    switch (status) {
+      case 'in_progress':
+        return 'sürmekte';
+      case 'pending':
+        return 'beklemede';
+      case 'completed':
+        return 'tamamlandı';
+      case 'cancelled':
+        return 'iptal edildi';
+      default:
+        return status;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Refresh discoveries when page becomes visible
@@ -20,14 +35,14 @@ class HomePage extends StatelessWidget {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Discoveries'),
+          title: const Text('İşler'),
           bottom: const TabBar(
             isScrollable: true,
             tabs: [
-              Tab(text: 'In Progress'),
-              Tab(text: 'Pending'),
-              Tab(text: 'Completed'),
-              Tab(text: 'Cancelled'),
+              Tab(text: 'Sürmekte'),
+              Tab(text: 'Beklemede'),
+              Tab(text: 'Tamamlandı'),
+              Tab(text: 'İptal Edildi'),
             ],
           ),
           actions: [
@@ -67,7 +82,7 @@ class HomePage extends StatelessWidget {
 
       if (filteredDiscoveries.isEmpty) {
         return Center(
-          child: Text('No ${status.replaceAll('_', ' ')} discoveries'),
+          child: Text('${_getLocalizedStatus(status)} iş bulunamadı'),
         );
       }
 
@@ -89,7 +104,10 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      timeago.format(DateTime.parse(discovery['created_at'])),
+                      timeago.format(
+                        DateTime.parse(discovery['created_at']),
+                        locale: 'tr',
+                      ),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -110,14 +128,14 @@ class HomePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${discovery['items_count']} items',
+                          '${discovery['items_count']} ürün',
                           style: const TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         Text(
-                          'Total: ${discovery['total_cost']}',
+                          'Toplam: ${discovery['total_cost']}₺',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.green,
