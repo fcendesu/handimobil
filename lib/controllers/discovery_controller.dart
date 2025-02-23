@@ -322,7 +322,7 @@ class DiscoveryController extends GetxController {
       }
 
       var request = http.MultipartRequest(
-        'PUT',
+        'POST',
         Uri.parse('$url/discoveries/$id'),
       );
 
@@ -331,23 +331,33 @@ class DiscoveryController extends GetxController {
         'Authorization': 'Bearer $storedToken',
       });
 
-      // Add text fields
+      request.fields['_method'] = 'PUT';
+
+      // Handle basic fields from data
+      data.remove('items'); // Remove items from data to handle separately
       request.fields.addAll(
-          data.map((key, value) => MapEntry(key, value?.toString() ?? '')));
+        data.map((key, value) => MapEntry(key, value?.toString() ?? '')),
+      );
 
-      // Add items if present
+      // Format items like in storeDiscovery
       if (selectedItems.isNotEmpty) {
-        request.fields['items'] =
-            json.encode(selectedItems.map((item) => item.toJson()).toList());
+        for (var i = 0; i < selectedItems.length; i++) {
+          var item = selectedItems[i];
+          request.fields['items[$i][id]'] = item.id.toString();
+          request.fields['items[$i][quantity]'] = item.quantity.toString();
+          if (item.customPrice != null) {
+            request.fields['items[$i][custom_price]'] =
+                item.customPrice.toString();
+          }
+        }
+      } else {
+        request.fields['items'] = '[]';
       }
 
-      // Add existing images
-      if (existingImages.isNotEmpty) {
-        request.fields['existing_images'] =
-            json.encode(existingImages.toList());
-      }
+      // Debug print
+      print('Items data sent: ${request.fields}');
 
-      // Add new images
+      // Handle images
       if (selectedImages.isNotEmpty) {
         for (var image in selectedImages) {
           final file = await http.MultipartFile.fromPath(
@@ -358,17 +368,38 @@ class DiscoveryController extends GetxController {
         }
       }
 
-      // Debug print
+      // Handle removed images
+      final currentImages = existingImages;
+      final originalImages =
+          currentDiscovery.value?['image_urls'] as List<dynamic>? ?? [];
+      final removedImages = originalImages
+          .where((url) => !currentImages.contains(url))
+          .map((url) => url.toString())
+          .toList();
+
+      if (removedImages.isNotEmpty) {
+        request.fields['remove_images'] = jsonEncode(removedImages);
+      }
+
+      // Debug prints
+      print('Request URL: ${request.url}');
       print('Request fields: ${request.fields}');
       print('Request files: ${request.files.length}');
 
       final response = await request.send();
       final responseData = await response.stream.bytesToString();
-      final jsonResponse = json.decode(responseData);
+      print('Response status: ${response.statusCode}');
+      print('Response body: $responseData');
 
-      print('Response: $jsonResponse'); // Debug print
+      final jsonResponse = jsonDecode(responseData);
 
       if (response.statusCode == 200) {
+        if (jsonResponse['data']['image_urls'] != null) {
+          existingImages.value =
+              List<String>.from(jsonResponse['data']['image_urls']);
+        }
+        selectedImages.clear();
+
         Get.snackbar(
           'Success',
           'Discovery updated successfully',
@@ -376,7 +407,6 @@ class DiscoveryController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        await fetchDiscoveryDetails(id);
         return true;
       } else {
         Get.snackbar(
@@ -389,7 +419,7 @@ class DiscoveryController extends GetxController {
         return false;
       }
     } catch (e) {
-      print('Error: $e');
+      print('Error updating discovery: $e');
       Get.snackbar(
         'Error',
         'An error occurred while updating discovery',

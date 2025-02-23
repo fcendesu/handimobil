@@ -1,13 +1,21 @@
+import 'package:flutter/services.dart'; // Add this import at the top
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter/services.dart'; // Add this import at the top
 import '../controllers/discovery_controller.dart';
 import 'widgets/item_selector_widget.dart';
 import 'widgets/image_picker_widget.dart';
 import '../models/selected_item.dart';
 
-class DiscoveryDetailsPage extends StatelessWidget {
+class DiscoveryDetailsPage extends StatefulWidget {
   final int discoveryId;
+
+  const DiscoveryDetailsPage({required this.discoveryId, super.key});
+
+  @override
+  State<DiscoveryDetailsPage> createState() => _DiscoveryDetailsPageState();
+}
+
+class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
   final DiscoveryController discoveryController = Get.find();
 
   final TextEditingController customerNameController = TextEditingController();
@@ -36,62 +44,96 @@ class DiscoveryDetailsPage extends StatelessWidget {
   final TextEditingController discountAmountController =
       TextEditingController();
 
-  DiscoveryDetailsPage({required this.discoveryId, super.key}) {
-    // Fetch and populate data when page is created
-    discoveryController.fetchDiscoveryDetails(discoveryId).then((_) {
-      final discovery = discoveryController.currentDiscovery.value;
-      if (discovery != null) {
-        // Populate basic fields
-        customerNameController.text = discovery['customer_name'] ?? '';
-        customerPhoneController.text = discovery['customer_phone'] ?? '';
-        customerEmailController.text = discovery['customer_email'] ?? '';
-        addressController.text = discovery['address'] ?? '';
-        discoveryTextController.text = discovery['discovery'] ?? '';
-        todoListController.text = discovery['todo_list'] ?? '';
-        noteToCustomerController.text = discovery['note_to_customer'] ?? '';
-        noteToHandiController.text = discovery['note_to_handi'] ?? '';
-        paymentMethodController.text = discovery['payment_method'] ?? '';
-        completionTimeController.text =
-            discovery['completion_time']?.toString() ?? '';
-        offerValidUntilController.text = discovery['offer_valid_until'] ?? '';
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+      discoveryController.fetchDiscoveryDetails(widget.discoveryId).then((_) {
+        final discovery = discoveryController.currentDiscovery.value;
+        if (discovery != null) {
+          // Populate basic fields
+          customerNameController.text = discovery['customer_name'] ?? '';
+          customerPhoneController.text = discovery['customer_phone'] ?? '';
+          customerEmailController.text = discovery['customer_email'] ?? '';
+          addressController.text = discovery['address'] ?? '';
+          discoveryTextController.text = discovery['discovery'] ?? '';
+          todoListController.text = discovery['todo_list'] ?? '';
+          noteToCustomerController.text = discovery['note_to_customer'] ?? '';
+          noteToHandiController.text = discovery['note_to_handi'] ?? '';
+          paymentMethodController.text = discovery['payment_method'] ?? '';
+          completionTimeController.text =
+              discovery['completion_time']?.toString() ?? '';
+          offerValidUntilController.text = discovery['offer_valid_until'] ?? '';
 
-        // Populate costs
-        final costs = discovery['costs'] ?? {};
-        serviceCostController.text = costs['service_cost']?.toString() ?? '';
-        transportationCostController.text =
-            costs['transportation_cost']?.toString() ?? '';
-        laborCostController.text = costs['labor_cost']?.toString() ?? '';
-        extraFeeController.text = costs['extra_fee']?.toString() ?? '';
+          // Populate costs
+          final costs = discovery['costs'] ?? {};
+          serviceCostController.text = costs['service_cost']?.toString() ?? '';
+          transportationCostController.text =
+              costs['transportation_cost']?.toString() ?? '';
+          laborCostController.text = costs['labor_cost']?.toString() ?? '';
+          extraFeeController.text = costs['extra_fee']?.toString() ?? '';
 
-        // Populate discounts
-        final discounts = discovery['discounts'] ?? {};
-        discountRateController.text = discounts['rate']?.toString() ?? '';
-        discountAmountController.text = discounts['amount']?.toString() ?? '';
+          // Populate discounts
+          final discounts = discovery['discounts'] ?? {};
+          discountRateController.text = discounts['rate']?.toString() ?? '';
+          discountAmountController.text = discounts['amount']?.toString() ?? '';
 
-        // Update items in controller
-        if (discovery['items'] != null) {
-          discoveryController.selectedItems.value =
-              List<Map<String, dynamic>>.from(discovery['items'])
-                  .map((item) => SelectedItem(
-                        id: item['id'],
-                        name: item[
-                            'item'], // API returns 'item' but model uses 'name'
-                        brand: item['brand'],
-                        originalPrice: item['base_price']?.toDouble() ??
-                            0.0, // API returns 'base_price' but model uses 'originalPrice'
-                        quantity: item['quantity'],
-                        customPrice: item['custom_price']?.toDouble(),
-                      ))
-                  .toList();
+          // Update items in controller
+          if (discovery['items'] != null) {
+            discoveryController.selectedItems.value =
+                List<Map<String, dynamic>>.from(discovery['items'])
+                    .map((item) => SelectedItem(
+                          id: item['id'],
+                          name: item[
+                              'item'], // API returns 'item' but model uses 'name'
+                          brand: item['brand'],
+                          originalPrice: item['base_price']?.toDouble() ??
+                              0.0, // API returns 'base_price' but model uses 'originalPrice'
+                          quantity: item['quantity'],
+                          customPrice: item['custom_price']?.toDouble(),
+                        ))
+                    .toList();
+          }
+
+          // Update images in controller
+          if (discovery['image_urls'] != null) {
+            discoveryController.existingImages.value =
+                List<String>.from(discovery['image_urls']);
+          }
         }
-
-        // Update images in controller
-        if (discovery['image_urls'] != null) {
-          discoveryController.existingImages.value =
-              List<String>.from(discovery['image_urls']);
-        }
-      }
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    // Dispose all TextEditingControllers
+    customerNameController.dispose();
+    customerPhoneController.dispose();
+    customerEmailController.dispose();
+    addressController.dispose();
+    discoveryTextController.dispose();
+    todoListController.dispose();
+    noteToCustomerController.dispose();
+    noteToHandiController.dispose();
+    paymentMethodController.dispose();
+    completionTimeController.dispose();
+    offerValidUntilController.dispose();
+    serviceCostController.dispose();
+    transportationCostController.dispose();
+    laborCostController.dispose();
+    extraFeeController.dispose();
+    discountRateController.dispose();
+    discountAmountController.dispose();
+
+    // Clear controller data
+    discoveryController.selectedItems.clear();
+    discoveryController.existingImages.clear();
+    discoveryController.selectedImages.clear();
+    discoveryController.currentDiscovery.value = null;
+    discoveryController.isLoading.value = false;
+
+    super.dispose();
   }
 
   @override
@@ -166,7 +208,7 @@ class DiscoveryDetailsPage extends StatelessWidget {
                           onChanged: (String? newValue) {
                             if (newValue != null) {
                               discoveryController.updateDiscoveryStatus(
-                                  discoveryId, newValue);
+                                  widget.discoveryId, newValue);
                             }
                           },
                         );
@@ -442,7 +484,7 @@ class DiscoveryDetailsPage extends StatelessWidget {
     }
 
     final success = await discoveryController.updateDiscovery(
-      discoveryId,
+      widget.discoveryId,
       {
         'customer_name': customerNameController.text.trim(),
         'customer_phone': customerPhoneController.text.trim(),
