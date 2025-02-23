@@ -135,22 +135,6 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
               await discoveryController.getShareUrl(widget.discoveryId);
             },
           ),
-          Obx(() => TextButton(
-                onPressed: discoveryController.isLoading.value
-                    ? null
-                    : () => _updateDiscovery(),
-                child: discoveryController.isLoading.value
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Text('Düzenle',
-                        style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
-              )),
         ],
       ),
       body: SingleChildScrollView(

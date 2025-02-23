@@ -95,21 +95,50 @@ class HomePage extends StatelessWidget {
             return Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ListTile(
-                title: Row(
+                contentPadding: const EdgeInsets.all(16),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        discovery['customer_name'],
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            discovery['customer_name'],
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Text(
+                          timeago.format(
+                            DateTime.parse(discovery['created_at']),
+                            locale: 'tr',
+                          ),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
                     ),
-                    Text(
-                      timeago.format(
-                        DateTime.parse(discovery['created_at']),
-                        locale: 'tr',
+                    if (discovery['address']?.toString().isNotEmpty ??
+                        false) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on,
+                              size: 16, color: Colors.grey),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              discovery['address'].toString(),
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 14,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
+                    ],
                   ],
                 ),
                 subtitle: Column(
@@ -135,7 +164,7 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Toplam: ${discovery['total_cost']}',
+                          'Toplam: ${discovery['total_cost']}₺',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.green,
