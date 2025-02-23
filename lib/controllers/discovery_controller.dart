@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart'; // Add this import
 import '../constants/constants.dart';
 import '../models/selected_item.dart';
 
@@ -552,5 +553,69 @@ class DiscoveryController extends GetxController {
     }
 
     return total;
+  }
+
+  // Add this method to DiscoveryController class
+  Future<String?> getShareUrl(int discoveryId) async {
+    try {
+      var storedToken = box.read('token');
+      if (storedToken == null) {
+        Get.snackbar(
+          'Error',
+          'Not authenticated',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return null;
+      }
+
+      final response = await http.get(
+        Uri.parse('$url/discoveries/$discoveryId/share'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $storedToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        final shareUrl = jsonResponse['data']['share_url'];
+        print(shareUrl);
+
+        // Copy to clipboard
+        await Clipboard.setData(ClipboardData(text: shareUrl));
+
+        Get.snackbar(
+          'Success',
+          'Share URL copied to clipboard',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+
+        return shareUrl;
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to get share URL',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return null;
+      }
+    } catch (e) {
+      print('Error getting share URL: $e');
+      Get.snackbar(
+        'Error',
+        'An error occurred while getting share URL',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return null;
+    }
   }
 }

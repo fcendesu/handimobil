@@ -128,14 +128,14 @@ class HomePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${discovery['items_count']} ürün',
+                          '${discovery['items_count']} Malzeme',
                           style: const TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         Text(
-                          'Toplam: ${discovery['total_cost']}₺',
+                          'Toplam: ${discovery['total_cost']}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.green,

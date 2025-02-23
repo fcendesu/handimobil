@@ -129,6 +129,12 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
       appBar: AppBar(
         title: const Text('Keşif Detayı'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () async {
+              await discoveryController.getShareUrl(widget.discoveryId);
+            },
+          ),
           Obx(() => TextButton(
                 onPressed: discoveryController.isLoading.value
                     ? null

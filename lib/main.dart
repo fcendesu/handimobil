@@ -5,10 +5,12 @@ import 'package:handimobil/views/home.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:handimobil/controllers/authentication.dart';
 import 'bindings/app_binding.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
+  timeago.setLocaleMessages('tr', timeago.TrMessages());
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'HandiMobil',
