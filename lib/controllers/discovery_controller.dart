@@ -130,15 +130,31 @@ class DiscoveryController extends GetxController {
         var jsonResponse = json.decode(response.body);
         currentDiscovery.value = jsonResponse['data'];
 
-        // Clear and update existing images
+        // Clear existing images first
         existingImages.clear();
+
+        // Process image URLs with delay to ensure proper loading
         if (jsonResponse['data']['image_urls'] != null) {
           List<dynamic> urls = jsonResponse['data']['image_urls'];
-          existingImages.addAll(urls.map((url) => url.toString()));
-        }
 
-        // Debug print the image URLs
-        print('Image URLs: ${existingImages}');
+          // Pre-cache images before adding them to the list
+          for (var imageUrl in urls) {
+            try {
+              // Verify the image can be loaded
+              final imageResponse =
+                  await http.get(Uri.parse(imageUrl.toString()));
+              if (imageResponse.statusCode == 200) {
+                existingImages.add(imageUrl.toString());
+              } else {
+                print('Failed to load image: $imageUrl');
+              }
+            } catch (e) {
+              print('Error pre-caching image $imageUrl: $e');
+            }
+          }
+
+          print('Successfully loaded ${existingImages.length} images');
+        }
       } else {
         Get.snackbar(
           'Error',
@@ -148,6 +164,7 @@ class DiscoveryController extends GetxController {
           colorText: Colors.white,
         );
       }
+      print("error yok");
     } catch (e) {
       print('Error: $e');
       Get.snackbar(
@@ -530,9 +547,12 @@ class DiscoveryController extends GetxController {
     // Add items total
     if (discovery['items'] != null) {
       for (var item in discovery['items']) {
-        double price = item['custom_price']?.toDouble() ??
-            item['base_price']?.toDouble() ??
-            0.0;
+        // Use double.tryParse instead of toDouble()
+        double price =
+            double.tryParse(item['custom_price']?.toString() ?? '') ??
+                double.tryParse(item['base_price']?.toString() ?? '') ??
+                0.0;
+
         int quantity = item['quantity'] ?? 1;
         total += price * quantity;
       }

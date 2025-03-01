@@ -43,8 +43,9 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 1), () {
       discoveryController.fetchDiscoveryDetails(widget.discoveryId).then((_) {
+        print('error 1');
         final discovery = discoveryController.currentDiscovery.value;
         if (discovery != null) {
           customerNameController.text = discovery['customer_name'] ?? '';
@@ -59,7 +60,7 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
           completionTimeController.text =
               discovery['completion_time']?.toString() ?? '';
           offerValidUntilController.text = discovery['offer_valid_until'] ?? '';
-
+          print('error 2');
           final costs = discovery['costs'] ?? {};
           serviceCostController.text = costs['service_cost']?.toString() ?? '';
           transportationCostController.text =
@@ -70,26 +71,38 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
           final discounts = discovery['discounts'] ?? {};
           discountRateController.text = discounts['rate']?.toString() ?? '';
           discountAmountController.text = discounts['amount']?.toString() ?? '';
+          print('error 3');
 
-          if (discovery['items'] != null) {
-            discoveryController.selectedItems.value =
-                List<Map<String, dynamic>>.from(discovery['items'])
-                    .map((item) => SelectedItem(
-                          id: item['id'],
-                          name: item['item'],
-                          brand: item['brand'],
-                          originalPrice: item['base_price']?.toDouble() ?? 0.0,
-                          quantity: item['quantity'],
-                          customPrice: item['custom_price']?.toDouble(),
-                        ))
-                    .toList();
+          try {
+            if (discovery['items'] != null) {
+              discoveryController.selectedItems.value =
+                  List<Map<String, dynamic>>.from(discovery['items'])
+                      .map((item) => SelectedItem(
+                            id: item['id'],
+                            name: item['item'],
+                            brand: item['brand'],
+                            originalPrice: double.tryParse(
+                                    item['base_price']?.toString() ?? '') ??
+                                0.0,
+                            quantity: item['quantity'],
+                            customPrice: item['custom_price'] != null
+                                ? double.tryParse(
+                                    item['custom_price'].toString())
+                                : null,
+                          ))
+                      .toList();
+            }
+          } catch (e) {
+            print('Error parsing items: $e');
           }
 
+          print('error 4');
           if (discovery['image_urls'] != null) {
             discoveryController.existingImages.value =
                 List<String>.from(discovery['image_urls']);
           }
         }
+        print('error 5');
       });
     });
   }
