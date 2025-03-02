@@ -638,4 +638,21 @@ class DiscoveryController extends GetxController {
       return null;
     }
   }
+
+  // Add this method to DiscoveryController class
+  void updateSelectedItem(int id,
+      {required int quantity, double? customPrice}) {
+    final index = selectedItems.indexWhere((item) => item.id == id);
+    if (index >= 0) {
+      final item = selectedItems[index];
+      selectedItems[index] = SelectedItem(
+        id: item.id,
+        name: item.name,
+        brand: item.brand,
+        originalPrice: item.originalPrice,
+        quantity: quantity,
+        customPrice: customPrice,
+      );
+    }
+  }
 }

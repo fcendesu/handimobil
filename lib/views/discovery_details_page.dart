@@ -488,6 +488,8 @@ class _DiscoveryDetailsPageState extends State<DiscoveryDetailsPage> {
     );
 
     if (success) {
+      // Refetch discoveries before going back
+      await discoveryController.fetchDiscoveries();
       Get.back();
     }
   }

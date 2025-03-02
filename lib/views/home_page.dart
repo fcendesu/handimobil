@@ -26,10 +26,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Refresh discoveries when page becomes visible
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      discoveryController.fetchDiscoveries();
-    });
+    // Use a FocusNode to detect when the page becomes visible
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    // Use onInit in GetX controller instead for initial load
+    // discoveryController already handles this in its onInit()
 
     return DefaultTabController(
       length: 4,

@@ -61,10 +61,22 @@ class ItemSelectorWidget extends StatelessWidget {
                             'Miktar: ${item.quantity}\n'
                             'Fiyat: ${item.customPrice ?? item.originalPrice}',
                           ),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () =>
-                                discoveryController.removeItem(item.id),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: () =>
+                                    _showUpdateItemDialog(context, item),
+                                tooltip: 'Düzenle',
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () =>
+                                    discoveryController.removeItem(item.id),
+                                tooltip: 'Sil',
+                              ),
+                            ],
                           ),
                         ),
                       ))
@@ -177,6 +189,115 @@ class ItemSelectorWidget extends StatelessWidget {
               Navigator.pop(context);
             },
             child: const Text('Ekle'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showUpdateItemDialog(BuildContext context, SelectedItem item) {
+    final quantityController =
+        TextEditingController(text: item.quantity.toString());
+    final customPriceController =
+        TextEditingController(text: item.customPrice?.toString() ?? '');
+    var useCustomPrice = (item.customPrice != null).obs;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Düzenle: ${item.name}'),
+        content: Obx(() => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: quantityController,
+                  decoration: const InputDecoration(
+                    labelText: 'Miktar *',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: useCustomPrice.value,
+                      onChanged: (value) => useCustomPrice.value = value!,
+                    ),
+                    const Text('Farklı fiyat kullan'),
+                  ],
+                ),
+                if (useCustomPrice.value) ...[
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: customPriceController,
+                    decoration: InputDecoration(
+                      labelText: 'Farklı Fiyat',
+                      border: OutlineInputBorder(),
+                      helperText: 'Boş bırakılırsa orijinal fiyat kullanılır',
+                    ),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                  ),
+                ],
+              ],
+            )),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('İptal'),
+          ),
+          TextButton(
+            onPressed: () {
+              // Validate quantity
+              if (quantityController.text.isEmpty) {
+                Get.snackbar(
+                  'Error',
+                  'Lütfen miktarı girin',
+                  snackPosition: SnackPosition.TOP,
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+                return;
+              }
+
+              final quantity = int.tryParse(quantityController.text);
+              if (quantity == null || quantity < 1) {
+                Get.snackbar(
+                  'Error',
+                  'Lütfen geçerli bir miktar girin',
+                  snackPosition: SnackPosition.TOP,
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+                return;
+              }
+
+              // Validate custom price if enabled
+              double? customPrice;
+              if (useCustomPrice.value &&
+                  customPriceController.text.isNotEmpty) {
+                customPrice = double.tryParse(customPriceController.text);
+                if (customPrice == null || customPrice < 0) {
+                  Get.snackbar(
+                    'Error',
+                    'Lütfe geçerli bir fiyat girin',
+                    snackPosition: SnackPosition.TOP,
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                  return;
+                }
+              }
+
+              discoveryController.updateSelectedItem(
+                item.id,
+                quantity: quantity,
+                customPrice: useCustomPrice.value ? customPrice : null,
+              );
+              Navigator.pop(context);
+            },
+            child: const Text('Güncelle'),
           ),
         ],
       ),
