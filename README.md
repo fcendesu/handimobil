@@ -1,4 +1,4 @@
-# HandiMobil - Mobile Service Management App
+# HandiMobil - Discovery Management System
 
 A Flutter mobile application for managing handyman service requests and discoveries. Built with Flutter and Laravel backend.
 
